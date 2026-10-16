@@ -1,4 +1,4 @@
-'use strict';
+// 'use strict';
 
 var makeOrdinal = require('./makeOrdinal');
 var isFinite = require('./isFinite');
@@ -30,9 +30,9 @@ let TENTHS_LESS_THAN_HUNDRED: string[] = [
  * @param {boolean} [asOrdinal] - Deprecated, use toWordsOrdinal() instead!
  * @returns {string}
  */
-function toWords(number: number, asOrdinal: string) {
+function toWords(number: number|string, asOrdinal?: boolean): string {
     var words;
-    var num = parseInt(number, 10);
+    var num = parseInt(String(number), 10);
 
     if (!isFinite(num)) {
         throw new TypeError(
@@ -48,12 +48,12 @@ function toWords(number: number, asOrdinal: string) {
     return asOrdinal ? makeOrdinal(words) : words;
 }
 
-function generateWords(number: number) {
-    var remainder, word,
-        words = arguments[1];
+function generateWords(number: number, words?: string[]): string {
+    let remainder: number = 0;
+    let word: string = '';
 
     // We’re done
-    if (number `===` 0) {
+    if (number === 0) {
         return !words ? 'zero' : words.join(' ').replace(/,$/, '');
     }
     // First run
