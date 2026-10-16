@@ -1,4 +1,4 @@
-'use strict';
+// 'use strict';
 
 var makeOrdinal = require('./makeOrdinal');
 var isFinite = require('./isFinite');
