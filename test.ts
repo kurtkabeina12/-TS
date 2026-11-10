@@ -1,29 +1,47 @@
-/* Запрос */
-
-enum QuestionStatus {
-  published = "published",
-  draft = "draft",
-  deleted = "deleted",
+interface IPayment {
+    sum: number;
+    from: number;
+    to: number;
 }
 
-interface Question{
-    topicId: number,
-    status: QuestionStatus  
-}
-/* Ответ */
-interface Answer{
-    question: string,
-    answer: string,
-    tags:[string],
-    likes: number,
-    status: QuestionStatus
+enum PaymentStatus {
+    Success = 'success',
+    Failed = 'failed',
 }
 
-async function getFaqs(req: Question):Promise<Answer> {
-    const res = await fetch('/faqs', {
-        method: 'POST',
-        body: JSON.stringify(req)
-    });
-    const data = await res.json();
-    return data;
+interface IPaymentRequest extends IPayment { }
+
+interface IDataSuccess extends IPayment {
+    databaseId: number;
+}
+
+interface IDataFailed {
+    errorMessage: string;
+    errorCode: number;
+}
+
+interface IResponseSuccess {
+    status: PaymentStatus.Success;
+    data: IDataSuccess;
+}
+
+interface IResponseFailed {
+    status: PaymentStatus.Failed;
+    data: IDataFailed;
+}
+
+function isResponseSuccess(res: IResponseFailed | IResponseSuccess): res is IResponseSuccess{
+    if(res.status == PaymentStatus.Success){
+        return true
+    }else{
+        return false
+    }
+}
+
+function f(res: IResponseSuccess | IResponseFailed){
+    if(isResponseSuccess(res)){
+        return res.data
+    }else{
+        return res.data.errorMessage
+    }
 }
