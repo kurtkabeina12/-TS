@@ -3,7 +3,7 @@ enum ResponseStatus {
     ERROR = 400,
 }
 
-interface ResponseData{
+interface IUser{
     id: number;
     firstName: string;
     lastName: string;
@@ -50,6 +50,13 @@ interface ResponseData{
     role?: string;
 }
 
+interface IUsersResponse {
+    users: IUser[];
+    total: number;
+    skip: number;
+    limit: number;
+}
+
 async function sendRequest(url:string){
     try {
         const response = await fetch(url, {
@@ -58,7 +65,7 @@ async function sendRequest(url:string){
          if (response.status !== ResponseStatus.SUCCESS) {
             throw new Error(`Ошибка HTTP: ${response.status}`);
         }
-        const result: ResponseData = await response.json();
+        const result: IUsersResponse = await response.json();
         return result;
     } catch (error) {
         throw new Error(`Ошибка при выполнении запроса: ${error}`);
@@ -66,5 +73,7 @@ async function sendRequest(url:string){
 }
 
 sendRequest('https://dummyjson.com/users')
-    .then(result => console.log(result))
+    .then(data => data.users.forEach(u =>
+        console.log(`${u.firstName} ${u.lastName}, ${u.age}, ${u.email}`)
+    ))
     .catch(error => console.error(error));
